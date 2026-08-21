@@ -1,0 +1,10 @@
+corner,sensor,stage,expected_fidelity,gate,primary_features,library,provenance_ok,notes
+EM8, Polar H10 HRV strap (BLE),A,GOOD,M1,RMSSD;SDNN;LF/HF;pNN50,neurokit2,true,ECG-grade; research standard; spec B.3: 'EM8 good'
+EM10, ambient light/sound/temp (Zigbee or USB hub),B,PARTIAL,M3,lux;dB;degC,home-assistant / custom,true,spec B.3: 'EM10 partial (load yes, felt no)'; enter at M3
+EM4, webcam (disciplined: on-device; no frames stored; default-off),C,WEAK,M4,presence;gaze-on-task,on-device vision (e.g. MediaPipe),true,spec B.3: 'EM4 weak'; camera earns place only if beats no-camera baseline
+EM2, derived (D1/D2 state + log history),D,NEAR-BLIND,M4,none (context features),engine,true,spec B.3: 'EM2 near-blind'; pruning decision at M4
+EM3, self-report (PSWQ-style),VOICE,M1,worry score,instrument (Talker),true,Voice corner; ground truth from self-report
+EM5, self-report (RRS-style),VOICE,M1,rumination score,instrument (Talker),true,Voice corner
+EM7, self-report (MAAS-style),VOICE,M1,emotion score,instrument (Talker),true,Voice corner
+EM9, self-report (SART-style),VOICE,M1,vigilance score,instrument (Talker),true,Voice corner
+baseline, no-sensor (intercept-only),CONTROL,M2,n/a,n/a,n/a,true,M2 compares each corner vs this

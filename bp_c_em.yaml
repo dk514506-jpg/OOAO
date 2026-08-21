@@ -1,0 +1,104 @@
+# bp_c_em.yaml — governed contract for the EM-Theory Situating Bridge
+# Companion to: HOMES_BP-C-EM_and_Leg3_Spec.docx (Part A logic block, maps 1:1 to em_theory_bayes.py)
+# Status: DRAFT v0.1 (OC-5 closure) · Owner: Coder seat · Validation: Locus (A.6.1 checklist)
+# Every field here is a contract the engine implements and the gates enforce.
+
+schema_version: 0.1
+blueprint_id: BP-C-EM
+title: "EM-Theory Situating Bridge — substrate estimation, voice prediction, reconciliation"
+status: DRAFT            # DRAFT -> VALIDATED (Locus A.6.1) -> OPERATIONAL
+
+# --- A.1 identity ---
+classification:
+  keystone: true
+  layer: transduction            # between layers, not a fifth layer (Manor v4.1 §5)
+  primary_dv: reconciliation_gap
+  leg: 3                         # substrate estimability, executed FIRST (go/no-go)
+
+# --- A.3 the logic block (maps 1:1 to em_theory_bayes.py) ---
+logic_block:
+  corners:
+    substrate: [EM2, EM4, EM8, EM10]   # noetic/perception/interoception/sensation
+    voices:    [EM3, EM5, EM7, EM9]    # worry/rumination/emotion/vigilance
+  encode_math_decode:
+    encode:  "LLM: text <-> structured state (persona expression only)"
+    math:    "engine: probability arithmetic (pgmpy), the ONLY learned component (CDT-1)"
+    decode:  "LLM: state-indexed voice (Talker)"
+    rule:    "LLM never does arithmetic; engine never generates text. Enforced by G-003 gates."
+  functions:                       # each maps to a method in em_theory_bayes.py
+    - name: predict_voices
+      input:  "P(substrate | sensors) posterior + CPTs"
+      output: "P(voice) predictions per corner"
+    - name: reconciliation_gap
+      input:  "predicted voices vs participant self-report"
+      output: "gap g(t) = divergence(predicted, reported) — the primary DV"
+    - name: personalize_update
+      input:  "gap trajectory + self-report + trust-tier flags"
+      output: "updated CPTs (bounded, CDT-1); never silent overwrite (BP-M path)"
+
+# --- A.4 authority — the central safety property ---
+authority:
+  ceiling: A4                      # propose + implement pending gate; never autonomous durable change
+  participant_veto: G-015          # Dallas holds sole sign-off on durable-memory/worldview change
+  no_clinical_claims: true         # measures behavior/self-report/gap, never brain states
+  no_cosmology: true               # EM-Theory physics/cosmology apparatus is out of scope
+
+# --- A.5 gates, trust, fallback ---
+gates:
+  triple_index:                    # OCI/CAI/CSI — concept-for-formula until instantiated (OC-1, D10)
+    oci: "1 - (1/|C_Omega|) * sum I[c_i(Omega, s_hat(t)) = violated]"
+    cai: "max_sim[s_hat(t), y_k(t)] over y_k in Y(t)"
+    csi: "q(t) * max[1 - sigma_k(t)] over y_k in Y(t)"
+    source: "Kabashkin 2026b (Information 17(3):255) — formulas PUBLISHED; floats in registry are placeholders"
+  write_time:                      # every durable write passes these (v4.1 §2.3: groundedness is gate-enforced)
+    - "provenance complete (source, timestamp, version, confidence) — none may be empty"
+    - "projection-computable: the claim's asset path exists in G_APS (OC-16 injection test)"
+    - "CSI above floor for the acting persona's tier (Chow-style threshold, OC-14)"
+  fallback:                        # E4 / G-016
+    last_good_narrative: true
+    last_good_cpt: true
+    no_action: true
+
+# --- A.6 provenance, governance, roles ---
+provenance:
+  pattern: "interTwin yProv (W3C-PROV) scaled to home-lab"   # S13 / notes [05]
+  # LOGBOOK (M1 WRITE TARGET) — the Measurement Logbook v2.0 columns (spec A.6):
+  # substrate_vector | voice_prediction | voice_report | gap_per_voice | gap_mean |
+  # CSI | model_version | timestamp | human_correction_flag
+  logbook_columns: [substrate_vector, voice_prediction, voice_report, gap_per_voice, gap_mean, CSI, model_version, timestamp, human_correction_flag]
+  # ENGINE MINIMUM — the Provenance dataclass fields every durable record must
+  # carry (empty field = reject). Mapped into the logbook columns as:
+  #   source -> substrate_vector/voice_prediction/voice_report (per record kind)
+  #   timestamp -> timestamp
+  #   schema_version -> model_version
+  #   confidence -> CSI (engine-written rows; 1.0 for participant rows)
+  #   actor -> (implicit; the writing persona is the log's owner column)
+  required_fields: [source, timestamp, schema_version, confidence, actor]
+  retention: "local, file-based, audit-trail; revocation-safe MIRROR rebuild (OC-15)"
+
+governance:
+  laws: [G-001, G-002, G-003, G-004, G-005, G-006, G-009, G-010, G-012, G-013, G-014, G-015, G-016]
+  role_owners:
+    coder: "implements this contract"
+    locus: "A.6.1 validation checklist -> VALIDATED status"
+    data_steward: "audits provenance columns"
+    participant: "Dallas — sole sign-off (G-015)"
+
+# --- B.3 corner-by-corner estimability (leg3_manifest.csv mirrors this) ---
+# Fidelity labels are EXPECTATIONS (spec B.3), never measurements: the honest
+# plausible outcome stated up front — EM8 good; EM10 partial (load yes, felt no);
+# EM4 weak; EM2 near-blind. Aligned v1.1 per OC-18 Locus REVISE.
+estimability:
+  EM8: {sensor: "Polar H10 HRV", stage: A, expected: GOOD, gate: M1}
+  EM10: {sensor: "ambient light/sound/temp", stage: B, expected: PARTIAL, gate: M3}
+  EM4: {sensor: "webcam (disciplined)", stage: C, expected: WEAK, gate: M4}
+  EM2: {sensor: "derived (D1/D2 state + history)", stage: D, expected: NEAR-BLIND, gate: M4}
+
+# --- validation checklist (A.6.1, Locus) ---
+validation_checklist:
+  - "logic block maps 1:1 to em_theory_bayes.py (methods exist, signatures match)"
+  - "authority ceiling enforced in code, not prose"
+  - "gates have tests (mock engine + synthetic data, E5)"
+  - "provenance fields asserted non-empty in every write path"
+  - "fallback paths trigger on gate failure (last-good, no-action)"
+  - "no clinical/cosmology claims anywhere in generated output"

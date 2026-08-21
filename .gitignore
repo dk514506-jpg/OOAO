@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# Generated / synthetic data — never commit fake data as if measured
+data/
+synthetic_data/
+capture/
+*.sqlite3
+*.sqlite
+
+# Office lock files / temp
+.~lock.*#
+*.tmp
+/tmp/
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Local secrets / config
+.env
+*.env.local
