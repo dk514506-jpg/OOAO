@@ -1,0 +1,19 @@
+# vt_recoverability_contract.yaml — VT-1 recoverability certification contract (R-3 / R-5)
+# Companion to: HOMES_VT1_Sublation_Synthesis_Package_v1_0 §5.3 (Certify(c)) and
+#               vt_recoverability.py (the certification checkpoint).
+# Status: PHASE 0 MACHINERY — registered: false (R-5). Every number below is
+# CALIBRATION-REFERENCE ONLY: it may tune the harness, never adjudicate.
+# The ε ceremony (Phase 4: registered: true + git tag + change freeze) is the
+# only event that makes these numbers binding. Until then certify() is
+# non-binding by construction (fail-closed).
+
+registered: false
+entropy_units: bits
+note: "calibration-reference-only until the Phase 4 ε ceremony (R-5)"
+
+thresholds:
+  epsilon_c: 0.30            # median_W H ceiling (bits) — provisional
+  coverage_theta: 0.80       # min fraction of W windows with usable observations
+  brier_margin: 0.02         # ΔBrier = baseline − model — provisional
+  stability_max_jsd: 0.10    # max pairwise JSD across repeated measurement
+  discriminability_min_jsd: 0.20   # min JSD between two subjects' signatures

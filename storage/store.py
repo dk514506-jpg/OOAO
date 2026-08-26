@@ -25,13 +25,25 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from vt_estimate import EPISTEMIC_STATUSES  # the 13-status vocabulary (R-2)
+
 _SCHEMA = Path(__file__).parent / "schema.sql"
+
+# migration chain (VT-1): schema.sql (v0.1) -> 001_vertical_time.sql -> 002_vt_synthesis.sql
+# PRAGMA user_version: 0 (fresh) -> 1 -> 2 -> 3. The ALTER-based migrations are
+# applied ONCE per database, each in its own transaction (atomic), and gated by
+# user_version so reopening an existing database is always safe.
+_MIGRATION_SCRIPTS = ("001_vertical_time.sql", "002_vt_synthesis.sql")
 
 LOGBOOK_COLUMNS = [
     "substrate_vector", "voice_prediction", "voice_report", "gap_per_voice",
     "gap_mean", "CSI", "model_version", "timestamp", "human_correction_flag",
     "source", "actor", "confidence", "arm", "window_id",
+    # --- VT-1 (001 + 002) ---
+    "layer", "mono_ns", "clock_skew_ns", "epistemic_status", "valid_until", "boundary_id",
 ]
+
+_LAYERS = ("physical", "psychophysiological", "symbolic")
 
 
 class LogbookError(RuntimeError):
@@ -56,6 +68,13 @@ class LogbookRow:
     confidence: float = 1.0
     arm: Optional[str] = None
     window_id: Optional[str] = None
+    # --- VT-1 (001 + 002): layer tag, monotonic clock, two-field estimate ---
+    layer: str = "psychophysiological"
+    mono_ns: Optional[int] = None
+    clock_skew_ns: Optional[int] = None
+    epistemic_status: str = "estimable"
+    valid_until: Optional[str] = None
+    boundary_id: Optional[str] = None
 
     def validate(self) -> None:
         """Fail-closed: every required field present and in range."""
@@ -79,6 +98,10 @@ class LogbookRow:
             raise LogbookError(f"confidence out of range: {self.confidence}")
         if self.human_correction_flag not in (0, 1):
             raise LogbookError(f"human_correction_flag must be 0/1: {self.human_correction_flag}")
+        if self.layer not in _LAYERS:
+            raise LogbookError(f"layer must be one of {_LAYERS}: {self.layer}")
+        if self.epistemic_status not in EPISTEMIC_STATUSES:
+            raise LogbookError(f"epistemic_status must be one of the 13: {self.epistemic_status}")
 
     def as_sql_tuple(self) -> tuple:
         self.validate()
@@ -97,6 +120,12 @@ class LogbookRow:
             self.confidence,
             self.arm,
             self.window_id,
+            self.layer,
+            self.mono_ns,
+            self.clock_skew_ns,
+            self.epistemic_status,
+            self.valid_until,
+            self.boundary_id,
         )
 
 
@@ -113,7 +142,26 @@ class Logbook:
         self._apply_schema()
 
     def _apply_schema(self) -> None:
-        self._conn.executescript(_SCHEMA.read_text())
+        """Apply the VT-1 migration chain, once per database.
+
+        schema.sql is idempotent DDL (IF NOT EXISTS) and safe to re-run;
+        the ALTER-based 001/002 migrations are gated by PRAGMA user_version
+        and each applied atomically in its own transaction, so reopening an
+        existing database never re-runs (or half-runs) an ALTER.
+        """
+        version = int(self._conn.execute("PRAGMA user_version").fetchone()[0])
+        if version < 1:
+            self._conn.executescript(_SCHEMA.read_text())
+            self._conn.execute("PRAGMA user_version = 1")
+        for step, name in enumerate(_MIGRATION_SCRIPTS, start=2):
+            if version >= step:
+                continue
+            script = (Path(__file__).parent / name).read_text()
+            statements = _split_sql_statements(script)
+            with self._conn:  # one transaction per migration — atomic
+                for stmt in statements:
+                    self._conn.execute(stmt)
+            self._conn.execute(f"PRAGMA user_version = {step}")
 
     # --- writes (fail-closed) -------------------------------------------------
     def write_row(self, row: LogbookRow) -> None:
@@ -164,3 +212,21 @@ class Logbook:
 
     def __exit__(self, *exc: Any) -> None:
         self.close()
+
+
+def _split_sql_statements(script: str) -> List[str]:
+    """Split a SQL script on statement terminators, ignoring ';' inside '--'
+    line comments. (The migration scripts contain no multi-line string
+    literals; CHECK constraints use single quotes only.)"""
+    statements: List[str] = []
+    buf: List[str] = []
+    for line in script.splitlines():
+        code = line.split("--", 1)[0]  # strip the line comment, if any
+        parts = code.split(";")
+        buf.append(parts[0])
+        for extra in parts[1:]:        # remainder after ';' starts the next statement
+            statements.append("\n".join(buf))
+            buf = [extra]
+    if buf:
+        statements.append("\n".join(buf))
+    return [s.strip() for s in statements if s.strip()]
