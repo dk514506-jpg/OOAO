@@ -149,7 +149,7 @@ HOMES is **blueprint-governed**: no material change to the system goes live with
 
 ### The H4 anti-iatrogenic gate (the project's core safety guard)
 
-Any benefit that arises from **increased self-surveillance** rather than genuine support is counted as a **failure**, not a win. The gate watches `felt-watched`, `tracking anxiety`, and `experiential flattening`; if the reconciliation gap collapses toward zero *while felt-watched rises*, that signals **deference, not perfect observation** — and the system **halts personalization** and eases off. This is encoded in `grounding_gate.py` and the H4 safety review.
+Any benefit that arises from **increased self-surveillance** rather than genuine support is counted as a **failure**, not a win. The gate watches `felt-watched`, `tracking anxiety`, and `experiential flattening`; if the reconciliation gap collapses toward zero *while felt-watched rises*, that signals **deference, not perfect observation** — and the system **halts personalization** (the gap-floor rule, implemented in `vt_estimate.py`) and eases off, under the H4 safety review.
 
 ### Biometric data is governed, not hoarded
 
