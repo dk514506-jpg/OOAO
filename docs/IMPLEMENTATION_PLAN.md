@@ -97,11 +97,11 @@ on any durable change; final go/no-go).
 ```
 python>=3.11
 pyyaml==6.0.*        # contract parsing
-polar-h10==0.5.*     # BLE HRV (or the newer fork pin)
+# polar-h10: BLE HRV capture — M1 hardware stage only; not installable as pinned (see requirements.txt)
 neurokit2==0.2.*     # HRV/EDA features
-pgmpy==0.1.*         # Bayesian engine arithmetic (or numpy backend for v1)
-numpy<2.0            # pin per pgmpy/neurokit2 compatibility
-pytest==8.*          # gate tests
+scientific-computing-system @ git+https://github.com/Furox-Art/scientific-computing-system@02931a8  # cds: verified math kernels (audited commit)
+numpy==2.5.*            # verified 2.5.1 with neurokit2 0.2.13 / cds
+pytest==9.*           # gate tests — verified 9.1.1
 ```
 
 LLM (encode/decode only, G-003): llama.cpp + Qwen2.5-7B-Instruct Q4_K_M —

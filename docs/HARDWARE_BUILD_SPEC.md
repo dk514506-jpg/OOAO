@@ -50,7 +50,7 @@ own a Pi 5 or an H10, Stage A is ~$90 for the other half.
 | Runtime | Python 3.11+ in a venv | Engine + capture | apt + venv |
 | BLE capture | `polar-h10` (Python, asyncio) | Mature H10 BLE client; streams HR + RR intervals | pip |
 | HRV features | `neurokit2` | Community standard for HRV/EDA feature extraction (RMSSD, SDNN, LF/HF, pNN50) | pip |
-| Engine | `pgmpy` (Bayesian networks) — em_theory_bayes.py wraps it | The "all arithmetic lives here" layer; CPTs, inference, gap | pip |
+| Engine | `em_theory_bayes.py` (self-contained; probability arithmetic verified against cds kernels) | The "all arithmetic lives here" layer; CPTs, inference, gap | pip |
 | Storage | SQLite, file-based, provenance columns | Local-first per B.5; no cloud; Data Steward seat audits | stdlib |
 | LLM (encode/decode) | llama.cpp (or Ollama) + Qwen2.5-7B-Instruct Q4_K_M | Local open-weight ~8B-class with structured output | llama.cpp build |
 | Scheduler | systemd timers (capture every N min; consolidation on triggers) | The daemon-community heartbeat | systemd |

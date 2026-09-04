@@ -1,16 +1,17 @@
 # Daemon Manor — pinned dependencies (09_implementation_plan.md §5)
 # Pin, don't float: the gates must reproduce.
 # Requires Python 3.11+.
-# VERIFIED ENVIRONMENT (2026-08-18): Python 3.13, neurokit2 0.2.13,
-#   numpy 2.5.1, pytest 9.1.1 — M1 gate suite passes 7/7 on these.
-# (v1.1 per OC-18 Locus REVISE: pins now describe the environment the suite
-#  actually ran on, not an aspirational one.)
+# VERIFIED ENVIRONMENT (2026-09-04): Python 3.12, neurokit2 0.2.13,
+#   numpy 2.5.1, pytest 9.1.1, cds @ 02931a8 — gate suite passes.
+# cds = verified math kernels (info theory / power / bootstrap): MIT, zero-dep,
+#   pure-Python. Git-pinned to the AUDITED commit (2026-09-02: 2395 tests,
+#   machine-precision oracles) because PyPI 1.7.0 lags it (no stats/power.py).
 
 pyyaml==6.0.*
 # polar-h10: BLE HRV capture, needed only at the M1 real-hardware stage.
 # Not installed by default — the mock-first gate suite runs without it.
 # Add it when Stage-A hardware lands (see polar_capture.py).
+scientific-computing-system @ git+https://github.com/Furox-Art/scientific-computing-system@02931a8
 neurokit2==0.2.*          # HRV/EDA features — verified 0.2.13
-pgmpy==0.1.*              # Bayesian engine arithmetic (bridge scaling; not yet imported)
 numpy==2.5.*              # verified 2.5.1 with neurokit2 0.2.13
 pytest==9.*               # gate tests — verified 9.1.1

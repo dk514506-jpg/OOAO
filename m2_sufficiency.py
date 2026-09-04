@@ -32,9 +32,12 @@ import math
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
+
+from cds.stats.bootstrap import bootstrap_ci
+from cds.stats.power import power_t_test
 
 from synthetic_manor_data import SyntheticManorData
 
@@ -50,6 +53,8 @@ class SufficiencyResult:
     n_train: int
     n_test: int
     synthetic: bool = True           # FAKE DATA label — always true until M1 hardware
+    improvement_ci: Optional[Tuple[float, float]] = None  # bootstrap 95% CI on paired per-window deltas
+    power_report: Optional[Dict[str, float]] = None       # descriptive post-hoc power (FAKE DATA — not a driver)
 
     @property
     def gate_read(self) -> str:
@@ -146,6 +151,27 @@ def run_sufficiency(
     brier_sensor = _brier(preds_sensor, actuals_sensor)
     brier_baseline = _brier(preds_baseline, actuals_baseline)
 
+    # Paired inference (Council N2): both arms share the same held-out windows,
+    # so the CI is a percentile bootstrap over PER-WINDOW deltas
+    # (baseline_sqerr - sensor_sqerr), not an independent-samples resample.
+    # The mean of these deltas equals `improvement` by construction.
+    se_sensor = (preds_sensor - actuals_sensor) ** 2.0
+    se_baseline = (preds_baseline - actuals_baseline) ** 2.0
+    per_window_delta = [float(d) for d in (se_baseline - se_sensor)]
+    ci = bootstrap_ci(per_window_delta, n_resamples=2000, seed=seed)
+    delta_std = float(np.std(per_window_delta))
+    d_obs = float(np.mean(per_window_delta) / delta_std) if delta_std > 0.0 else 0.0
+    # Descriptive post-hoc power (Council N3): two-sample approximation, clearly
+    # labeled — harness characterization on FAKE DATA, not a go/no-go driver.
+    power_report = {
+        "method": "cds power_t_test (pooled two-sample approx; post-hoc, descriptive)",
+        "effect_size_d": round(d_obs, 4),
+        "n_per_group": len(test),
+        "alpha": 0.05,
+        "power": round(float(power_t_test(d_obs, len(test))), 4),
+        "note": "FAKE DATA harness characterization only — real M2 uses paired inference on hardware windows",
+    }
+
     return SufficiencyResult(
         corner=corner,
         brier_with_substrate=round(brier_sensor, 4),
@@ -154,6 +180,8 @@ def run_sufficiency(
         n_train=n_train,
         n_test=len(test),
         synthetic=True,
+        improvement_ci=(round(float(ci.lower), 4), round(float(ci.upper), 4)),
+        power_report=power_report,
     )
 
 
@@ -185,6 +213,11 @@ def main() -> int:
         print(f"  Brier sensor arm:    {r.brier_with_substrate:.4f}")
         print(f"  Brier baseline arm:  {r.brier_baseline:.4f}")
         print(f"  improvement:         {r.improvement:+.4f}  (positive = sensor helps)")
+        if r.improvement_ci:
+            print(f"  improvement CI (95%): [{r.improvement_ci[0]:+.4f}, {r.improvement_ci[1]:+.4f}]  (paired bootstrap)")
+        if r.power_report:
+            print(f"  post-hoc power:      {r.power_report['power']:.3f} at d={r.power_report['effect_size_d']:.3f} "
+                  f"(descriptive, FAKE DATA)")
         print(f"  gate read:           {r.gate_read}")
     print(f"\nartifact: {args.out}")
     print("REMEMBER: synthetic results validate the harness, not the hypothesis.")

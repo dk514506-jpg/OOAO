@@ -57,11 +57,12 @@ The thesis: a well-grounded system and a well-practiced person can improve toget
 │   ├── 002_vt_synthesis.sql  ← VT synthesis migration
 │   └── store.py              ← fail-closed SQLite writer
 │
-└── gates/                    ← the M0–M5 test gates (currently 91 tests, all passing)
+└── gates/                    ← the M0–M5 test gates (currently 97 tests, all passing)
     ├── test_m0_mock_loop.py
     ├── test_m1_capture_smoke.py
     ├── test_m1_real_path.py
     ├── test_m2_sufficiency.py
+    ├── test_numerical_oracles.py
     ├── test_engine_negative.py
     ├── test_grounding_gate.py
     ├── test_triple_index.py
@@ -158,14 +159,29 @@ Any benefit that arises from **increased self-surveillance** rather than genuine
 
 ## Verification & test discipline
 
-The repository ships with a **91-test gate suite** that must pass before any milestone is declared. It follows a strict **mock-first (E5) discipline**: every gate runs against deterministic synthetic data first; real hardware replaces mocks at M1 but the synthetic path remains as the regression baseline. Negative tests are first-class — the engine **refuses to run without its contract file**, empty provenance raises, out-of-range confidence raises, and an ungrounded claim that cites real assets is **rejected** by the write-time gate.
+The repository ships with a **97-test gate suite** that must pass before any milestone is declared. It follows a strict **mock-first (E5) discipline**: every gate runs against deterministic synthetic data first; real hardware replaces mocks at M1 but the synthetic path remains as the regression baseline. Negative tests are first-class — the engine **refuses to run without its contract file**, empty provenance raises, out-of-range confidence raises, and an ungrounded claim that cites real assets is **rejected** by the write-time gate.
 
 ```bash
 pip install -r requirements.txt
-python -m pytest gates/ -q        # expect: 91 passed
+python -m pytest gates/ -q        # expect: 97 passed
 ```
 
 All synthetic data is labeled `FAKE DATA` in its manifest — the project refuses to let its own test fixtures masquerade as measurements.
+
+## Dependencies & attribution
+
+Commodity math kernels delegate to **`cds`** — the certified, MIT-licensed,
+zero-dependency pure-Python science platform by Furox-Art
+(`scientific-computing-system`). It is git-pinned in `requirements.txt` to the
+**audited commit `02931a8`** (2026-09-02 audit: 2,395 tests passing,
+machine-precision oracles vs scipy/numpy), not to PyPI 1.7.0 — that release
+lags the audited commit (it lacks `cds/infotheory` and `cds/stats/power`).
+Adopted surface, per module: entropy / Jensen-Shannon divergence
+(`vt_recoverability.py`), power analysis + paired bootstrap confidence
+intervals (`m2_sufficiency.py`). Parity between the repo's kernels and the
+reference is enforced in `gates/test_numerical_oracles.py`. The Bayes engine
+structure, governance gates, and storage remain bespoke — they are the
+instrument, not commodity math.
 
 ---
 

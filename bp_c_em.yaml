@@ -22,7 +22,7 @@ logic_block:
     voices:    [EM3, EM5, EM7, EM9]    # worry/rumination/emotion/vigilance
   encode_math_decode:
     encode:  "LLM: text <-> structured state (persona expression only)"
-    math:    "engine: probability arithmetic (pgmpy), the ONLY learned component (CDT-1)"
+    math:    "engine: probability arithmetic (self-contained; verified against cds kernels), the ONLY learned component (CDT-1)"
     decode:  "LLM: state-indexed voice (Talker)"
     rule:    "LLM never does arithmetic; engine never generates text. Enforced by G-003 gates."
   functions:                       # each maps to a method in em_theory_bayes.py

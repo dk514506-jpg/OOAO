@@ -153,27 +153,33 @@ def _normalize(probs: Mapping[str, float] | np.ndarray) -> np.ndarray:
     return p / total
 
 
+# --- verified math kernels (adopted from cds) --------------------------------
+# entropy/js delegate to `cds` (Furox-Art, scientific-computing-system @
+# 02931a8, MIT, audited 2026-09-02: 2395 tests, machine-precision oracles vs
+# scipy/numpy). cds requires distributions summing to 1; the local _normalize
+# above preserves this module's defensive engine-posterior contract
+# (unnormalized, scale-invariant input). See gates/test_numerical_oracles.py.
+from cds.infotheory.measures import entropy as _cds_entropy      # noqa: E402
+from cds.infotheory.measures import js_divergence as _cds_js      # noqa: E402
+
+
 def entropy(probs: Mapping[str, float], base: float = 2.0) -> float:
     """Shannon entropy of a (possibly unnormalized) probability mapping, in
-    the given base (default bits). Uniform over n → log2(n); point mass → 0."""
+    the given base (default bits). Uniform over n → log2(n); point mass → 0.
+    Delegates to the verified cds reference after defensive normalization."""
     p = _normalize(probs)
-    p = p[p > 0.0]
-    if p.size == 0:
-        return 0.0
-    return float(-np.sum(p * np.log(p)) / np.log(base))
-
-
-def _kl(p: np.ndarray, q: np.ndarray) -> float:
-    eps = 1e-12
-    return float(np.sum(p * np.log((p + eps) / (q + eps)) / np.log(2.0)))
+    return float(_cds_entropy([float(v) for v in p], base=base))
 
 
 def jsd(p: Mapping[str, float], q: Mapping[str, float]) -> float:
     """Jensen–Shannon divergence in bits: symmetric, bounded [0, 1].
-    0 = identical distributions; 1 = disjoint supports."""
+    0 = identical distributions; 1 = disjoint supports.
+    Delegates to the verified cds reference. The former hand-rolled _kl put an
+    eps=1e-12 blur INSIDE the log, which violates the 0·log0 := 0 convention
+    and mis-scales terms near the eps floor; adoption removes that class.
+    Parity is pinned in gates/test_numerical_oracles.py."""
     pn, qn = _normalize(p), _normalize(q)
-    m = 0.5 * (pn + qn)
-    return float(0.5 * _kl(pn, m) + 0.5 * _kl(qn, m))
+    return float(_cds_js([float(v) for v in pn], [float(v) for v in qn], base=2.0))
 
 
 def brier_delta(baseline_brier: float, model_brier: float) -> float:
