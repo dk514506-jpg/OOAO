@@ -1,6 +1,6 @@
 # DAEMON MANOR — SYSTEM LIFECYCLE & ROADMAP
 ## The Fused Plan: Three Legs × Phases × Gates × Decision Points
-Version 1.0 · 2026-08-18 · Author: Pip
+Version 1.0 · 2026-08-18
 Fuses: prospectus v2 §6/§9 (legs, phases), BP-C-EM Leg3 Spec B.7 (milestones),
 Architecture v4.1 §6 (sequencing), 09_implementation_plan.md (tasks)
 

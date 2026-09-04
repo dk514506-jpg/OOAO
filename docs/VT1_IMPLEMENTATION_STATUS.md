@@ -1,6 +1,6 @@
 # VT-1 Phase 0 Implementation Status — the ledger behind the synthesis package
 
-Status: LANDED AND VERIFIED · 25 August 2026 · Owner: Coder seat (silvey)
+Status: LANDED AND VERIFIED · 25 August 2026
 Companion to: `HOMES_VT1_Sublation_Synthesis_Package_v1_0` (§5 architecture,
 §6 phase ladder, §8 database schematics, §9 governance deltas).
 

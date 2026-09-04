@@ -36,14 +36,14 @@ The thesis: a well-grounded system and a well-practiced person can improve toget
 │   ├── MEMORY_DESIGN.md       ← the D4 memory/worldview layer
 │   └── VT1_IMPLEMENTATION_STATUS.md ← vertical-time ledger + verification transcript
 │
-├── em_theory_bayes.py        ← ★ the situating-bridge inference engine (no math in LLM)
+├── em_theory_bayes.py        ← the situating-bridge inference engine (no math in LLM)
 ├── triple_index.py           ← OCI/CAI/CSI gate, instantiated from Kabashkin (2026)
 ├── grounding_gate.py         ← write-time provenance+traceability+groundedness gate
 ├── m2_sufficiency.py         ← the Leg-3 sufficiency test (GO/NO-GO #1) harness
 ├── synthetic_manor_data.py   ← deterministic fake-data generator (FAKE-DATA labeled)
-├── polar_capture.py          ← ★ POLAR H10 BLE capture — the real-hardware plug-in
+├── polar_capture.py          ← POLAR H10 BLE capture — the real-hardware plug-in
 ├── hrv_pipeline.py           ← feature extraction → engine posterior → gap
-├── retention_purge.py        ← biometric retention/erasure enforcement (OC-4)
+├── retention_purge.py        ← biometric retention/erasure enforcement
 ├── vt_estimate.py            ← vertical-time epistemic gate (the R-2 invariant)
 ├── vt_recoverability.py      ← vertical-time recoverability certification + wrapper
 │
@@ -96,7 +96,7 @@ The thesis: a well-grounded system and a well-practiced person can improve toget
 
 ---
 
-## Where the hardware plugs in ★
+## Where the hardware plugs in
 
 The most common question a reviewer asks is *"where does the physical system connect?"* The answer is deliberately clean and **synthetic-first**: every real-hardware branch is gated behind a clear interface, so the whole loop runs today on synthetic data (FAKE-DATA labeled) and switches to real signals the moment hardware is present.
 
@@ -114,7 +114,7 @@ The most common question a reviewer asks is *"where does the physical system con
 from polar_capture import capture_rr_window, is_polar_present
 
 if is_polar_present():                      # BLE reachability probe
-    window = capture_rr_window(mock=False)  # ★ REAL Polar H10 RR stream (ms)
+    window = capture_rr_window(mock=False)  # REAL Polar H10 RR stream (ms)
 else:
     window = capture_rr_window(mock=True)   # deterministic synthetic stand-in
 ```
@@ -130,7 +130,7 @@ hrv_pipeline.py:       neurokit2 → RMSSD/SDNN/LFHF/pNN50   (T9)
         │
 em_theory_bayes.py:    feature → P(EM8) → voice prediction  (T10)
         │
-reconciliation_gap:    predicted vs self-report → gap g(t)  ★ primary DV
+reconciliation_gap:    predicted vs self-report → gap g(t)   (primary DV)
         │
 storage/store.py:      fail-closed provenance-tagged logbook row (M1 write target)
 ```
@@ -139,7 +139,7 @@ Every durable record carries the engine-minimum provenance (`source, timestamp, 
 
 ---
 
-## Governance — what makes this safe, not just clever
+## Governance — how the system stays safe
 
 HOMES is **blueprint-governed**: no material change to the system goes live without passing through a governed lifecycle (`Draft → Designed → Coded → Validated → Approved → Active`). Three code families keep inference bounded:
 
@@ -147,11 +147,11 @@ HOMES is **blueprint-governed**: no material change to the system goes live with
 - **Trust tiers (T0–T3):** unverified sources log only; only cross-verified state reaches durable memory.
 - **Triple-Index gate (OCI/CAI/CSI):** `triple_index.py` computes ontology consistency, cognitive adequacy, and confidence from Kabashkin (2026) — before any memory write, recommendation, or action, all three must clear their thresholds.
 
-### The H4 anti-iatrogenic gate (the soul of the project)
+### The H4 anti-iatrogenic gate (the project's core safety guard)
 
 Any benefit that arises from **increased self-surveillance** rather than genuine support is counted as a **failure**, not a win. The gate watches `felt-watched`, `tracking anxiety`, and `experiential flattening`; if the reconciliation gap collapses toward zero *while felt-watched rises*, that signals **deference, not perfect observation** — and the system **halts personalization** and eases off. This is encoded in `grounding_gate.py` and the H4 safety review.
 
-### Biometric data is governed, not hoarded (OC-4)
+### Biometric data is governed, not hoarded
 
 `retention_purge.py` enforces a tiered retention policy: raw biosignals (Class A) are purged after 30 days by default; derived features (Class B) after 90; the purge **never touches** the keystone-governed reconciled logbook. Erasure is irreversible **and** provable — content hard-deleted, the *fact* of erasure appended to an audit ledger. Raw signals never leave the local store (no cloud, no egress).
 

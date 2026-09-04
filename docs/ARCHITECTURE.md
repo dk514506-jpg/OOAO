@@ -1,8 +1,8 @@
 # DAEMON MANOR
 ## A Person-Centric Digital Service Ecosystem Twin — Renovated HOMES Architecture v4.1
 
-Version 1.1 · 2026-08-18 · Designer: Pip · Governance frame-check: Locus + Council (OC-8, three-body review)
-v4.1 amendments: all verified findings from the OC-8 review applied (see §9).
+Version 1.1 · 2026-08-18 · Amended: v4.1 (2026-09-04)
+v4.1 amendments: all verified findings from the architecture review applied (see §9).
 Companion to: HOMES Architecture v3.0 (Governance Edition), BP-C-EM + Leg 3 Spec,
 Research Prospectus v2.0, and the Extraction Register (03_extraction_register_old_plan.md)
 Formal spine: Kabashkin, I. (2026). From Assets and Processes to Service Ecosystems
@@ -198,9 +198,10 @@ service dependencies (who may gate whom), and value-generation (what the Manor i
 
 This is the formal justification for something the project has always held
 intuitively — carried conditionally, as the source requires. **Under Assumptions 4-5
-— and for the Manor load-bearing only on the value-generation dimension (roles and
-dependencies are by-design in this architecture; see below) — Silvey is not her
-pipeline. Pip is not the blueprint script. Locus is not the validation function.**
+— and for the Manor foundational only on the value-generation dimension (roles and
+dependencies are by-design in this architecture; see below) — a persona is not its
+pipeline, a designer is not the script they run, a validator is not the checklist
+they apply.**
 
 Honesty note (v4.1, per OC-8 review): Assumption 4 (service-twin attributes not
 fully determined by asset+process layers) is only partially true for the engineered
@@ -394,7 +395,7 @@ separately gated). The two-week timeline is gone; the honest ladder is in.
 
 ---
 
-## 8. Open Charges Introduced by This Document
+## 8. Open Items Introduced by This Document
 
 - OC-8 (CLOSED 2026-08-18): three-body review complete — Locus REVISE (light) +
   Council KERNEL PRESERVED; all verified findings applied in v4.1 (see §9).
@@ -415,7 +416,7 @@ separately gated). The two-week timeline is gone; the honest ladder is in.
 
 ---
 
-## 9. OC-8 Review Amendment Log (v4.1)
+## 9. Amendment Log (v4.1)
 
 Three-body review (Locus + Council Design + Council Evidence) on the v4.0 text;
 verdict files in Household/reviews/. Every finding below was verified against the

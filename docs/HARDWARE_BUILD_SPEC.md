@@ -1,6 +1,6 @@
 # DAEMON MANOR — BUILD SPEC SHEET
 ## Stage A–D Hardware & Software, Pinned and Orderable
-Version 1.0 · 2026-08-18 · Author: Pip · Baseline: Raspberry Pi 5 node + Polar H10 (Dallas-confirmed)
+Version 1.0 · 2026-08-18 · Baseline: Raspberry Pi 5 node + Polar H10
 Source of truth: BP-C-EM and Leg3 Spec (B.4 hardware staging, B.5 software pipeline, B.7 milestone ladder)
 
 ---

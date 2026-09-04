@@ -33,7 +33,7 @@ This is the **first and primary** hardware integration. It is the keystone gate 
    em_theory_bayes.py  ──►  P(EM8 | features) → voice predictions  (T10)
               │
               ▼
-   reconciliation_gap(predicted, self-reported)  ★ primary DV
+   reconciliation_gap(predicted, self-reported)  (primary DV)
               │
               ▼
    storage/store.py  ──►  provenance-tagged logbook row (M1 write target)

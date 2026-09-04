@@ -1,12 +1,12 @@
 # bp_c_em.yaml — governed contract for the EM-Theory Situating Bridge
 # Companion to: HOMES_BP-C-EM_and_Leg3_Spec.docx (Part A logic block, maps 1:1 to em_theory_bayes.py)
-# Status: DRAFT v0.1 (OC-5 closure) · Owner: Coder seat · Validation: Locus (A.6.1 checklist)
+# Status: DRAFT v0.1 · Validation: A.6.1 checklist
 # Every field here is a contract the engine implements and the gates enforce.
 
 schema_version: 0.1
 blueprint_id: BP-C-EM
 title: "EM-Theory Situating Bridge — substrate estimation, voice prediction, reconciliation"
-status: DRAFT            # DRAFT -> VALIDATED (Locus A.6.1) -> OPERATIONAL
+status: DRAFT            # DRAFT -> VALIDATED (A.6.1) -> OPERATIONAL
 
 # --- A.1 identity ---
 classification:
@@ -39,7 +39,7 @@ logic_block:
 # --- A.4 authority — the central safety property ---
 authority:
   ceiling: A4                      # propose + implement pending gate; never autonomous durable change
-  participant_veto: G-015          # Dallas holds sole sign-off on durable-memory/worldview change
+  participant_veto: G-015          # the participant holds sole sign-off on durable-memory/worldview change
   no_clinical_claims: true         # measures behavior/self-report/gap, never brain states
   no_cosmology: true               # EM-Theory physics/cosmology apparatus is out of scope
 
@@ -87,14 +87,14 @@ governance:
 # --- B.3 corner-by-corner estimability (leg3_manifest.csv mirrors this) ---
 # Fidelity labels are EXPECTATIONS (spec B.3), never measurements: the honest
 # plausible outcome stated up front — EM8 good; EM10 partial (load yes, felt no);
-# EM4 weak; EM2 near-blind. Aligned v1.1 per OC-18 Locus REVISE.
+# EM4 weak; EM2 near-blind. Aligned v1.1 (2026-09).
 estimability:
   EM8: {sensor: "Polar H10 HRV", stage: A, expected: GOOD, gate: M1}
   EM10: {sensor: "ambient light/sound/temp", stage: B, expected: PARTIAL, gate: M3}
   EM4: {sensor: "webcam (disciplined)", stage: C, expected: WEAK, gate: M4}
   EM2: {sensor: "derived (D1/D2 state + history)", stage: D, expected: NEAR-BLIND, gate: M4}
 
-# --- validation checklist (A.6.1, Locus) ---
+# --- validation checklist (A.6.1) ---
 validation_checklist:
   - "logic block maps 1:1 to em_theory_bayes.py (methods exist, signatures match)"
   - "authority ceiling enforced in code, not prose"

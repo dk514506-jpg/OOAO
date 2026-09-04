@@ -1,7 +1,7 @@
 # DAEMON MANOR — AGENTIC MEMORY DESIGN NOTE
 ## The D4 Memory/Worldview Twin, per the Agent-Memory Survey (Huang et al., TMLR 2026)
 
-Version 0.1 (draft for Locus frame-check) · 2026-08-18 · Designer: Pip
+Version 0.1 · 2026-08-18
 Source: Huang, W.-C. et al. (2026). A Survey of Agent Memory in the Second Half:
 Towards Self-Evolving and Long-Horizon Agents. TMLR 07/2026; arXiv:2602.06052v4.
 This note translates the survey's taxonomy and system-design findings into a

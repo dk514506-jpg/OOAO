@@ -1,7 +1,7 @@
 # DAEMON MANOR — IMPLEMENTATION PLAN
 ## Task-Level Build Plan: Companion Files, Repo Layout, Milestone Gates
-Version 1.0 · 2026-08-18 · Author: Pip · Owner chain: Pip → Coder seat → Locus (validation)
-Baseline: Raspberry Pi 5 + Polar H10 (Stage A) · Data: SYNTHETIC until M1 hardware (Dallas directive 2026-08-18)
+Version 1.0 · 2026-08-18
+Baseline: Raspberry Pi 5 + Polar H10 (Stage A) · Data: SYNTHETIC until M1 hardware (decided 2026-08-18)
 Companions: 08_build_spec_sheet.md (BOM) · bp_c_em.yaml (governed contract) · leg3_manifest.csv ·
 em_theory_bayes.py (engine skeleton, M0 verified) · synthetic_manor_data.py (fake-data harness, verified)
 
@@ -27,7 +27,7 @@ outside this plan.
 ├── leg3_manifest.csv            # sensor/estimability map (DRAFT — this workspace)
 ├── em_theory_bayes.py           # engine (SKELETON v0.1, M0 verified — this workspace)
 ├── synthetic_manor_data.py      # fake-data generator (verified — this workspace)
-├── capture/                     # BLE ingestion (polar-h10), HERMES P/C/P pattern
+├── capture/                     # BLE ingestion (polar-h10), P/C/P capture pattern
 │   └── polar_capture.py
 ├── features/                    # neurokit2 wrappers (RMSSD/SDNN/LFHF/pNN50)
 │   └── hrv_features.py
@@ -49,37 +49,35 @@ outside this plan.
 ## 3. Task graph (dependency-ordered)
 
 ```
-T1 scaffold repo + venv + pinned deps            (Pip)
-  └─ T2 draft bp_c_em.yaml contract              (Pip — DONE in this workspace)
-  └─ T3 draft leg3_manifest.csv                  (Pip — DONE)
-  └─ T4 engine skeleton em_theory_bayes.py       (Pip — DONE, M0 verified)
-  └─ T5 synthetic data harness                   (Pip — DONE, verified)
+T1 scaffold repo + venv + pinned deps            (design)
+  └─ T2 draft bp_c_em.yaml contract              (design — DONE in this workspace)
+  └─ T3 draft leg3_manifest.csv                  (design — DONE)
+  └─ T4 engine skeleton em_theory_bayes.py       (design — DONE, M0 verified)
+  └─ T5 synthetic data harness                   (design — DONE, verified)
 T2..T5 are DONE as drafts; the tasks below BUILD on them.
 
-T6 storage schema + store.py (SQLite, provenance columns)      (Coder seat)
-T7 gates/ harness: test_provenance.py, test_m0_mock_loop.py    (Coder seat)
-T8 capture smoke: polar-h10 BLE scan + RR stream → SQLite      (Coder seat)  [M1 hardware]
-T9 features: neurokit2 RMSSD/SDNN/LFHF from RR stream          (Coder seat)  [M1]
-T10 wire features → engine posterior → gap → provenance log    (Coder seat)  [M1]
+T6 storage schema + store.py (SQLite, provenance columns)      (implementation)
+T7 gates/ harness: test_provenance.py, test_m0_mock_loop.py    (implementation)
+T8 capture smoke: polar-h10 BLE scan + RR stream → SQLite      (implementation)  [M1 hardware]
+T9 features: neurokit2 RMSSD/SDNN/LFHF from RR stream          (implementation)  [M1]
+T10 wire features → engine posterior → gap → provenance log    (implementation)  [M1]
 ── M1 GATE: loop closes on REAL or SYNTHETIC HRV; provenance writes ──
-T11 sufficiency harness: fit/hold-out/calibrate vs baseline     (Coder seat)
-T12 self-report instrument: Talker prompts + rating capture     (Coder seat)  [M2]
+T11 sufficiency harness: fit/hold-out/calibrate vs baseline     (implementation)
+T12 self-report instrument: Talker prompts + rating capture     (implementation)  [M2]
 ── M2 GATE: GO/NO-GO #1 — does EM8 beat no-sensor baseline? ──
-T13 EM10 sensors (Zigbee/USB hub) + feature wiring              (Coder seat)  [M3]
-T14 re-run sufficiency on {EM8, EM10}                           (Coder seat)  [M3]
+T13 EM10 sensors (Zigbee/USB hub) + feature wiring              (implementation)  [M3]
+T14 re-run sufficiency on {EM8, EM10}                           (implementation)  [M3]
 ── M3 GATE: does adding sensory-load help? ──
-T15 webcam (disciplined) + EM2 derived features                 (Coder seat)  [M4]
-T16 pruning decisions (EM4 weak? EM2 near-blind?)                (Pip + Locus) [M4]
+T15 webcam (disciplined) + EM2 derived features                 (implementation)  [M4]
+T16 pruning decisions (EM4 weak? EM2 near-blind?)                (design + validation) [M4]
 ── M4 GATE: camera earns its place? EM2 pruned? ──
-T17 fidelity map (good/partial/weak/blind per corner) — spec     (Pip)         [M4]
+T17 fidelity map (good/partial/weak/blind per corner) — spec     (design)         [M4]
     B.7: M4 delivers the honest fidelity map
-T18 keystone go/no-go documented; graph pruned or promoted      (Locus)       [M5]
+T18 keystone go/no-go documented; graph pruned or promoted      (validation) [M5]
 ── M5 GATE: keystone stands, or honest negative ──
 ```
 
-Owners: Pip (design/adjacency), Coder seat (implementation), Locus (validation
-gates M2/M5), Data Steward (storage/provenance audit), Dallas (G-015 sign-off
-on any durable change; final go/no-go).
+Owners: design · implementation · validation (gates M2/M5) · data stewardship (storage/provenance audit) · participant (G-015 sign-off on any durable change; final go/no-go).
 
 ## 4. Milestone gates (the contract for each)
 
@@ -123,7 +121,7 @@ NOT a python dep; runs as a sidecar process; the engine never calls it for math.
 - No secrets in configs (Vault/zero-trust lesson, S33): the H10 pairing is a
   device-local secret; store per the storage schema, never in bp_c_em.yaml.
 
-## 7. Data policy (per Dallas directive 2026-08-18)
+## 7. Data policy (decided 2026-08-18)
 
 - Synthetic data is the DEFAULT until M1 hardware arrives. The harness
   (synthetic_manor_data.py) is deterministic (seed), generates both arms

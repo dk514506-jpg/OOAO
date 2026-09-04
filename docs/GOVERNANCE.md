@@ -2,7 +2,7 @@
 
 **Why a bounded AI system can be trusted to touch a person's home and inner life — the principled answer.**
 
-HOMES is not "an AI that lives in a home." It is a **governed order** in which bounded AI capabilities operate under explicit, auditable rules. The governance layer is not an afterthought bolted on for ethics compliance — it is the load-bearing structure that makes the system safe enough to run *at all*.
+HOMES is not "an AI that lives in a home." It is a **governed order** in which bounded AI capabilities operate under explicit, auditable rules. The governance layer is not an afterthought bolted on for ethics compliance — it is the core structure that makes the system safe enough to run *at all*.
 
 ---
 
@@ -69,7 +69,7 @@ No material change to HOMES goes live without a **Blueprint** — the mandatory 
 
 ---
 
-## 6. The H4 anti-iatrogenic gate (the soul of the project)
+## 6. The H4 anti-iatrogenic gate (the project's core safety guard)
 
 H4 is the safety override that **outranks every other outcome**. It rests on a specific, non-generic stake: being *defined by another's perception* is the original injury this project exists to help recover from — so HOMES itself must never become a second instance of that dynamic.
 
@@ -88,7 +88,7 @@ This is stated plainly because the alternative (claiming kernel-enforced governa
 
 ---
 
-## 8. Biometric data governance (OC-4)
+## 8. Biometric data governance
 
 Raw physiological data (HRV/EDA/ECG) is governed by a ratified retention policy:
 - **Class A** (raw signals): 30-day default purge, irreversible hard-delete, erasure *fact* logged.
