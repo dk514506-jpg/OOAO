@@ -1,13 +1,15 @@
 # Daemon Manor — pinned dependencies (09_implementation_plan.md §5)
 # Pin, don't float: the gates must reproduce.
+# Requires Python 3.11+.
 # VERIFIED ENVIRONMENT (2026-08-18): Python 3.13, neurokit2 0.2.13,
 #   numpy 2.5.1, pytest 9.1.1 — M1 gate suite passes 7/7 on these.
 # (v1.1 per OC-18 Locus REVISE: pins now describe the environment the suite
 #  actually ran on, not an aspirational one.)
 
-python>=3.11
 pyyaml==6.0.*
-polar-h10==0.5.*          # BLE HRV capture (M1 hardware stage)
+# polar-h10: BLE HRV capture, needed only at the M1 real-hardware stage.
+# Not installed by default — the mock-first gate suite runs without it.
+# Add it when Stage-A hardware lands (see polar_capture.py).
 neurokit2==0.2.*          # HRV/EDA features — verified 0.2.13
 pgmpy==0.1.*              # Bayesian engine arithmetic (bridge scaling; not yet imported)
 numpy==2.5.*              # verified 2.5.1 with neurokit2 0.2.13

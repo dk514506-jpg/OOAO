@@ -121,8 +121,8 @@ python retention_purge.py --apply --h4-trip   # accelerated ease-off purge
 # 1. Install pinned deps
 pip install -r requirements.txt
 
-# 2. Run the full gate suite (53 tests) — all synthetic-first, no hardware needed
-python -m pytest gates/ -q            # expect: 53 passed
+# 2. Run the full gate suite (91 tests) — all synthetic-first, no hardware needed
+python -m pytest gates/ -q            # expect: 91 passed
 
 # 3. Run the capture module (mock path)
 python polar_capture.py               # prints a synthetic window + detection probe

@@ -25,11 +25,16 @@ The thesis: a well-grounded system and a well-practiced person can improve toget
 ├── LICENSE
 ├── requirements.txt          ← pinned dependencies (Python 3.11+, verified)
 │
-├── ARCHITECTURE.md           ← the full system architecture (Daemon Manor v4.1)
-├── ROADMAP.md                ← three legs × phases × gates × decision points
-├── IMPLEMENTATION_PLAN.md    ← task graph (T1–T18), milestone gates M0–M5
-├── HARDWARE_BUILD_SPEC.md    ← Stage A–D bill of materials + wiring order
-├── MEMORY_DESIGN.md          ← the D4 memory/worldview layer
+├── docs/                      ← the full documentation set
+│   ├── ARCHITECTURE.md        ← full system architecture (Daemon Manor v4.1)
+│   ├── RESEARCH_OVERVIEW.md   ← the research question, design, and falsifiers
+│   ├── GOVERNANCE.md          ← authority ceilings, trust tiers, the H4 gate
+│   ├── ROADMAP.md             ← three legs × phases × gates × decision points
+│   ├── IMPLEMENTATION_PLAN.md ← task graph (T1–T18), milestone gates M0–M5
+│   ├── HARDWARE_BUILD_SPEC.md ← Stage A–D bill of materials + wiring order
+│   ├── HARDWARE_INTEGRATION.md ← real-hardware plug-in walkthrough
+│   ├── MEMORY_DESIGN.md       ← the D4 memory/worldview layer
+│   └── VT1_IMPLEMENTATION_STATUS.md ← vertical-time ledger + verification transcript
 │
 ├── em_theory_bayes.py        ← ★ the situating-bridge inference engine (no math in LLM)
 ├── triple_index.py           ← OCI/CAI/CSI gate, instantiated from Kabashkin (2026)
@@ -39,15 +44,20 @@ The thesis: a well-grounded system and a well-practiced person can improve toget
 ├── polar_capture.py          ← ★ POLAR H10 BLE capture — the real-hardware plug-in
 ├── hrv_pipeline.py           ← feature extraction → engine posterior → gap
 ├── retention_purge.py        ← biometric retention/erasure enforcement (OC-4)
+├── vt_estimate.py            ← vertical-time epistemic gate (the R-2 invariant)
+├── vt_recoverability.py      ← vertical-time recoverability certification + wrapper
 │
 ├── bp_c_em.yaml              ← governed contract for the situating bridge (1:1 to code)
+├── vt_recoverability_contract.yaml ← contract for the recoverability gate
 ├── leg3_manifest.csv         ← corner/sensor/estimability map
 │
 ├── storage/
 │   ├── schema.sql            ← fail-closed logbook schema (WAL, provenance-tagged)
+│   ├── 001_vertical_time.sql ← vertical-time migration (chain 0.1→1→2→3)
+│   ├── 002_vt_synthesis.sql  ← VT synthesis migration
 │   └── store.py              ← fail-closed SQLite writer
 │
-└── gates/                    ← the M0–M5 test gates (currently 53 tests, all passing)
+└── gates/                    ← the M0–M5 test gates (currently 91 tests, all passing)
     ├── test_m0_mock_loop.py
     ├── test_m1_capture_smoke.py
     ├── test_m1_real_path.py
@@ -55,7 +65,9 @@ The thesis: a well-grounded system and a well-practiced person can improve toget
     ├── test_engine_negative.py
     ├── test_grounding_gate.py
     ├── test_triple_index.py
-    └── test_storage.py
+    ├── test_storage.py
+    ├── test_vt_estimate.py
+    └── test_vt_recoverability.py
 ```
 
 ---
@@ -146,11 +158,11 @@ Any benefit that arises from **increased self-surveillance** rather than genuine
 
 ## Verification & test discipline
 
-The repository ships with a **53-test gate suite** that must pass before any milestone is declared. It follows a strict **mock-first (E5) discipline**: every gate runs against deterministic synthetic data first; real hardware replaces mocks at M1 but the synthetic path remains as the regression baseline. Negative tests are first-class — the engine **refuses to run without its contract file**, empty provenance raises, out-of-range confidence raises, and an ungrounded claim that cites real assets is **rejected** by the write-time gate.
+The repository ships with a **91-test gate suite** that must pass before any milestone is declared. It follows a strict **mock-first (E5) discipline**: every gate runs against deterministic synthetic data first; real hardware replaces mocks at M1 but the synthetic path remains as the regression baseline. Negative tests are first-class — the engine **refuses to run without its contract file**, empty provenance raises, out-of-range confidence raises, and an ungrounded claim that cites real assets is **rejected** by the write-time gate.
 
 ```bash
 pip install -r requirements.txt
-python -m pytest gates/ -q        # expect: 53 passed
+python -m pytest gates/ -q        # expect: 91 passed
 ```
 
 All synthetic data is labeled `FAKE DATA` in its manifest — the project refuses to let its own test fixtures masquerade as measurements.
